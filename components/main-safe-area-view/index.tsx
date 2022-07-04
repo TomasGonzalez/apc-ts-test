@@ -1,5 +1,5 @@
 import { Platform, StatusBar } from 'react-native';
-import styled from '../styled-components';
+import styled from '../../styled-components';
 
 const MainSafeAreaView = styled.SafeAreaView`
   display: flex;

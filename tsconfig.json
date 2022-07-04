@@ -2,6 +2,16 @@
   "extends": "expo/tsconfig.base",
   "types": ["jest", "styled-components-react-native"],
   "compilerOptions": {
-    "strict": true
-  }
+      "baseUrl": "",
+      "allowSyntheticDefaultImports": true,
+      "jsx": "react-native",
+      "lib": ["dom", "esnext"],
+      "moduleResolution": "node",
+      "noEmit": true,
+      "skipLibCheck": true,
+      "resolveJsonModule": true,
+      "strict": true,
+      "downlevelIteration": true,
+      "strictFunctionTypes":true 
+    }
 }
