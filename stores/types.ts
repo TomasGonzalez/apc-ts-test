@@ -1,6 +1,10 @@
+import { UserOrgs } from 'types';
+
 export interface GlobalState {
-  getGitHubIssues: () => void;
-  setOrganization: (org: string) => void;
+  // getGitHubIssues: () => void;
   gitHubIssues: Array<Record<string, unknown>>;
-  organization: string;
+  setOrganization: (org: UserOrgs) => void;
+  organization: UserOrgs | null;
+  repository: any;
+  setRepository: any;
 }

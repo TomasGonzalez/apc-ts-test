@@ -3,24 +3,18 @@ import create from 'zustand';
 import gitHubClient from 'api/gitHubClient';
 
 import { GlobalState } from './types';
+import { UserOrgs } from 'types';
 
-const useStore = create<GlobalState>()((set, get) => ({
-  getGitHubIssues: async () => {
-    // const request = await gitHubClient.request('GET /orgs/{org}/issues', {
-    //   org: get().organization,
-    // });
-    const { data } = await gitHubClient.request('GET /orgs/{org}/issues', {
-      org: get().organization,
-    });
-    console.log(data, 'my good dollar issues');
-    // set((state: GlobalState) => ({ gitHubIssues: [...state.gitHubIssues] }));
-  },
+const useStore = create<GlobalState>()((set) => ({
+  // getGitHubIssues: null,
   gitHubIssues: [],
-  setOrganization: (org: string) =>
+  setOrganization: (org: UserOrgs) =>
     set({
       organization: org,
     }),
-  organization: 'GoodDollar',
+  organization: null,
+  setRepository: (repo: string) => set({ repository: repo }),
+  repository: null,
 }));
 
 export default useStore;

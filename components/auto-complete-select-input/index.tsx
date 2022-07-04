@@ -5,7 +5,12 @@ import {
 } from 'react-native-autocomplete-dropdown';
 
 const AutoCompleteSelectInput = (props: AutocompleteDropdownProps) => (
-  <AutocompleteDropdown {...props} />
+  <AutocompleteDropdown
+    clearOnFocus={false}
+    closeOnBlur={true}
+    closeOnSubmit={false}
+    {...props}
+  />
 );
 
 export default AutoCompleteSelectInput;

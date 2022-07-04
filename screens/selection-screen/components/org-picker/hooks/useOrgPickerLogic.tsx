@@ -2,30 +2,37 @@ import { useCallback, useEffect, useState } from 'react';
 
 import gitHubClient from 'api/gitHubClient';
 import useStore from 'stores/MainStore';
+import { UserOrgs } from 'types';
 
 const useOrgPickerLogic = () => {
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [userOrgs, setUserOrgs] = useState<UserOrgs[]>([]);
   const setOrganization = useStore((state) => state.setOrganization);
 
   const getGitHubOrgs = useCallback(async () => {
-    const { data } = await gitHubClient.request('GET /organizations');
-    console.log(data);
+    try {
+      const { data } = await gitHubClient.request('GET /user/orgs');
+      setUserOrgs(() =>
+        data.map((org) => ({ id: `${org.id}`, title: org.login }))
+      );
+    } catch (err) {
+      console.log(err, 'send it to sentry or something');
+    }
+  }, []);
+
+  const _setOrganization = useCallback((org: UserOrgs) => {
+    setOrganization(org);
   }, []);
 
   useEffect(() => {
     getGitHubOrgs();
-  }, [getGitHubOrgs]);
+  }, []);
 
   return {
-    clearOnFocus: false,
-    closeOnBlur: true,
-    closeOnSubmit: false,
-    onSelectItem: () => setSelectedItem,
-    dataSet: [
-      { id: '1', title: 'Alpha' },
-      { id: '2', title: 'Beta' },
-      { id: '3', title: 'Gamma' },
-    ],
+    onSelectItem: _setOrganization,
+    dataSet: userOrgs,
+    textInputProps: {
+      placeholder: 'Select Organization',
+    },
   };
 };
 
