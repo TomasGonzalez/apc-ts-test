@@ -9,6 +9,7 @@ const useOrgPickerLogic = () => {
 
   const getGitHubOrgs = useCallback(async () => {
     const { data } = await gitHubClient.request('GET /organizations');
+    console.log(data);
   }, []);
 
   useEffect(() => {
@@ -19,7 +20,6 @@ const useOrgPickerLogic = () => {
     clearOnFocus: false,
     closeOnBlur: true,
     closeOnSubmit: false,
-    initialValue: { id: '2' },
     onSelectItem: () => setSelectedItem,
     dataSet: [
       { id: '1', title: 'Alpha' },
