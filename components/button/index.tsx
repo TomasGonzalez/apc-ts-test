@@ -7,13 +7,13 @@ const StyledPressable = styled.Pressable`
   display flex;
   justify-content: center;
   align-items: center;
-  padding: ${(props: StyledButton) => props.theme.defaultPadding};
-  border-radius: ${(props: StyledButton) => props.theme.defaultPadding};
-  background-color: ${(props: StyledButton) => props.theme.colors.contrast};
+  padding: ${(props: StyledButton) => props?.theme?.defaultPadding};
+  border-radius: ${(props: StyledButton) => props?.theme?.defaultPadding};
+  background-color: ${(props: StyledButton) => props?.theme?.colors.contrast};
 `;
 
 const StyledButtonText = styled.Text`
-  color: ${(props: StyledButton) => props.theme.colors.background};
+  color: ${(props: StyledButton) => props?.theme?.colors.background};
 `;
 
 const Button = (props: StyledButton) => {

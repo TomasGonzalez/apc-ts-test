@@ -17,10 +17,9 @@ const useRepoPickerLogic = () => {
         const { data } = await gitHubClient.request('GET /orgs/{org}/repos', {
           org: organization.title,
         });
-
         return setRepositories(
           data.map((repo) => ({
-            title: repo.full_name,
+            title: repo.name,
             id: `${repo?.id}`,
           }))
         );

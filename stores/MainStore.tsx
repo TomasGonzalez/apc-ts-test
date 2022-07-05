@@ -1,7 +1,5 @@
 import create from 'zustand';
 
-import gitHubClient from 'api/gitHubClient';
-
 import { GlobalState } from './types';
 import { UserOrgs } from 'types';
 

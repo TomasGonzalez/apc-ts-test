@@ -7,7 +7,7 @@ import SectionView from 'components/section-view';
 import OrgPicker from './components/org-picker';
 import RepoPicker from './components/repo-picker';
 import Button from 'components/button';
-import useStore from 'stores/MainStore';
+import useSelectionScreenLogic from './hooks/useSelectionScreenLogic';
 
 const ContainerView = styled(MainView)`
   align-items: center;
@@ -15,8 +15,7 @@ const ContainerView = styled(MainView)`
 `;
 
 const SelectionScreen = () => {
-  const organization = useStore((state) => state.organization);
-  const repository = useStore((state) => state.repository);
+  const { isButtonDisabled, onNavigateToIssues } = useSelectionScreenLogic();
 
   return (
     <ContainerView>
@@ -29,9 +28,9 @@ const SelectionScreen = () => {
         </View>
         <View style={{ marginTop: 8 }}>
           <Button
-            disabled={!organization || !repository}
+            disabled={isButtonDisabled()}
             title={'Get Issues'}
-            onPress={() => console.log('test')}
+            onPress={onNavigateToIssues}
           />
         </View>
       </SectionView>
