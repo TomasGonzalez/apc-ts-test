@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
-import useStore from 'stores/MainStore';
 
+import useStore from 'stores/MainStore';
 import gitHubClient from 'api/gitHubClient';
+import { TAutocompleteDropdownItem } from 'react-native-autocomplete-dropdown';
 
 const useRepoPickerLogic = () => {
   const setRepository = useStore((state) => state.setRepository);
   const organization = useStore((state) => state.organization);
-  const [repositories, setRepositories] = useState<Record<string, unknown>[]>(
-    []
-  );
+  const [repositories, setRepositories] = useState<
+    TAutocompleteDropdownItem[] | []
+  >([]);
 
   const getGitHubRepos = useCallback(async () => {
     try {
@@ -18,7 +19,10 @@ const useRepoPickerLogic = () => {
         });
 
         return setRepositories(
-          data.map((repo) => ({ title: repo.full_name, id: repo.id }))
+          data.map((repo) => ({
+            title: repo.full_name,
+            id: `${repo?.id}`,
+          }))
         );
       }
       return setRepositories([]);
@@ -27,8 +31,8 @@ const useRepoPickerLogic = () => {
     }
   }, [organization]);
 
-  const _setRepositorie = useCallback((repo: Record<string, unknown>) => {
-    setRepository(repo?.title);
+  const _setRepositorie = useCallback((repo: TAutocompleteDropdownItem) => {
+    setRepository(repo?.title as string);
   }, []);
 
   useEffect(() => {

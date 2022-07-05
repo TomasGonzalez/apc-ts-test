@@ -6,8 +6,6 @@ import { GlobalState } from './types';
 import { UserOrgs } from 'types';
 
 const useStore = create<GlobalState>()((set) => ({
-  // getGitHubIssues: null,
-  gitHubIssues: [],
   setOrganization: (org: UserOrgs) =>
     set({
       organization: org,
