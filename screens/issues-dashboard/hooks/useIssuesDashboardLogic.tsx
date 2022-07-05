@@ -12,6 +12,7 @@ const useIssuesDashboardLogic = () => {
   const [issuesList, setIssuesList] = useState<Issue[] | []>([]);
   const [filterBy, setFilterBy] = useState(0);
   const [page, setPage] = useState(1);
+  const [selectedItem, setSelectedItem] = useState<null | number>(null);
   const [sections, setSections] = useState<{ title: string; data: Issue[] }[]>(
     []
   );
@@ -34,6 +35,8 @@ const useIssuesDashboardLogic = () => {
           title: issue?.title,
           id: issue?.id,
           state: issue?.state,
+          repository_url: issue?.repository_url,
+          url: issue.url,
         })),
       ]);
     } catch (err) {
@@ -51,11 +54,14 @@ const useIssuesDashboardLogic = () => {
 
     for (const _issue of issuesList) {
       // "bookmark:${issue.id}" should be saved as a constant in a config/utils file...
+      const issueState = await AsyncStorage.getItem(`bookmark:${_issue.id}`);
+      console.log(_issue.id, issueState, 'issue state');
       if (_issue.state === IssuesStates[filterBy] || !filterBy) {
-        if (await AsyncStorage.getItem(`bookmark:${_issue.id}`)) {
-          bookmarkedIssues.push(_issue);
+        if (issueState === 'true') {
+          bookmarkedIssues.push({ ..._issue, isBookmarked: true });
+        } else {
+          otherIssues.push({ ..._issue, isBookmarked: false });
         }
-        otherIssues.push(_issue);
       }
     }
 
@@ -63,10 +69,6 @@ const useIssuesDashboardLogic = () => {
       { title: 'Bookmarked Issues', data: bookmarkedIssues },
       { title: 'All Issues', data: otherIssues },
     ]);
-  };
-
-  const changeFilterBy = () => {
-    setFilterBy((_filter) => (_filter + 1) % 3);
   };
 
   useEffect(() => {
@@ -77,7 +79,23 @@ const useIssuesDashboardLogic = () => {
     getIssues();
   }, [getIssues, page]);
 
-  return { sections: sections, onEndReached, changeFilterBy, filterBy };
+  const changeFilterBy = () => {
+    setFilterBy((_filter) => (_filter + 1) % 3);
+  };
+
+  const onSelectItem = (item: Issue) => {
+    setSelectedItem(item.id);
+  };
+
+  return {
+    sections: sections,
+    onEndReached,
+    calculateSections,
+    changeFilterBy,
+    filterBy,
+    selectedItem,
+    onSelectItem,
+  };
 };
 
 export default useIssuesDashboardLogic;
