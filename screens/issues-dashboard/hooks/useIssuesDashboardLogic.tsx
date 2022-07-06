@@ -55,7 +55,6 @@ const useIssuesDashboardLogic = () => {
     for (const _issue of issuesList) {
       // "bookmark:${issue.id}" should be saved as a constant in a config/utils file...
       const issueState = await AsyncStorage.getItem(`bookmark:${_issue.id}`);
-      console.log(_issue.id, issueState, 'issue state');
       if (_issue.state === IssuesStates[filterBy] || !filterBy) {
         if (issueState === 'true') {
           bookmarkedIssues.push({ ..._issue, isBookmarked: true });
