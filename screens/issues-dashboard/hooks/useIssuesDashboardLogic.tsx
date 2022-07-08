@@ -96,7 +96,7 @@ const useIssuesDashboardLogic = () => {
   }, [getIssues, page]);
 
   const changeFilterBy = () => {
-    setFilterBy(rotateFilterBy);
+    setFilterBy(rotateToNextFilter);
   };
 
   const onSelectItem = (item: Issue) => {
