@@ -3,8 +3,37 @@ import { useCallback, useEffect, useState } from 'react';
 import gitHubClient from 'api/gitHubClient';
 import useStore from 'stores/MainStore';
 import { Issue } from 'types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import asyncStorage from '@react-native-async-storage/async-storage';
 import { IssuesStates } from '../types';
+
+export const calculateSections = async (
+  _asyncStorage: typeof asyncStorage,
+  issuesList: Issue[],
+  filterBy: number
+) => {
+  const bookmarkedIssues: Issue[] = [];
+  const otherIssues: Issue[] = [];
+
+  for (const _issue of issuesList) {
+    // "bookmark:${issue.id}" should be saved as a constant in a config/utils file...
+    const issueIsBookmaked = await _asyncStorage.getItem(
+      `bookmark:${_issue.id}`
+    );
+
+    if (_issue.state === IssuesStates[filterBy] || !filterBy) {
+      if (issueIsBookmaked === 'true') {
+        bookmarkedIssues.push({ ..._issue, isBookmarked: true });
+      } else {
+        otherIssues.push({ ..._issue, isBookmarked: false });
+      }
+    }
+  }
+
+  return [
+    { title: 'Bookmarked Issues', data: bookmarkedIssues },
+    { title: 'All Issues', data: otherIssues },
+  ];
+};
 
 const useIssuesDashboardLogic = () => {
   const organization = useStore((state) => state.organization);
@@ -48,30 +77,11 @@ const useIssuesDashboardLogic = () => {
     setPage((_page) => _page + 1);
   }, []);
 
-  const calculateSections = async () => {
-    const bookmarkedIssues: Issue[] = [];
-    const otherIssues: Issue[] = [];
-
-    for (const _issue of issuesList) {
-      // "bookmark:${issue.id}" should be saved as a constant in a config/utils file...
-      const issueState = await AsyncStorage.getItem(`bookmark:${_issue.id}`);
-      if (_issue.state === IssuesStates[filterBy] || !filterBy) {
-        if (issueState === 'true') {
-          bookmarkedIssues.push({ ..._issue, isBookmarked: true });
-        } else {
-          otherIssues.push({ ..._issue, isBookmarked: false });
-        }
-      }
-    }
-
-    setSections([
-      { title: 'Bookmarked Issues', data: bookmarkedIssues },
-      { title: 'All Issues', data: otherIssues },
-    ]);
-  };
+  const _setSections = async () =>
+    setSections(await calculateSections(asyncStorage, issuesList, filterBy));
 
   useEffect(() => {
-    calculateSections();
+    _setSections();
   }, [issuesList, filterBy]);
 
   useEffect(() => {
@@ -87,9 +97,9 @@ const useIssuesDashboardLogic = () => {
   };
 
   return {
-    sections: sections,
+    sections,
     onEndReached,
-    calculateSections,
+    calculateSections: _setSections,
     changeFilterBy,
     filterBy,
     selectedItem,

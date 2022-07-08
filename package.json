@@ -12,7 +12,8 @@
     "eject": "expo eject"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFiles": ["./jest-setup.ts"]
   },
   "dependencies": {
     "@octokit/core": "^3.6.0",
