@@ -10,11 +10,7 @@ yarn
 ```
 
 ## Set up
-```env
- variable GIT_HUB_ACCESS_KEY="" is required
-
- for testing in localhost add it to .env.development 
-```
+* env variable GIT_HUB_ACCESS_KEY="" is required for testing in localhost add it to .env.development 
 
 ## Usage
 
