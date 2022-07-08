@@ -5,6 +5,7 @@ import useStore from 'stores/MainStore';
 import { Issue } from 'types';
 import asyncStorage from '@react-native-async-storage/async-storage';
 import { IssuesStates } from '../types';
+import { rotateBy } from 'utils/rotateBy';
 
 export const calculateSections = async (
   _asyncStorage: typeof asyncStorage,
@@ -33,6 +34,12 @@ export const calculateSections = async (
     { title: 'Bookmarked Issues', data: bookmarkedIssues },
     { title: 'All Issues', data: otherIssues },
   ];
+};
+
+export const rotateToNextFilter = (_filter: number) => {
+  //Got to divide by two because the enum object contains both the numerica value and string values
+  const amountOfIssuesStates = Object.values(IssuesStates).length / 2;
+  return rotateBy(_filter, 1, amountOfIssuesStates);
 };
 
 const useIssuesDashboardLogic = () => {
@@ -89,7 +96,7 @@ const useIssuesDashboardLogic = () => {
   }, [getIssues, page]);
 
   const changeFilterBy = () => {
-    setFilterBy((_filter) => (_filter + 1) % 3);
+    setFilterBy(rotateFilterBy);
   };
 
   const onSelectItem = (item: Issue) => {

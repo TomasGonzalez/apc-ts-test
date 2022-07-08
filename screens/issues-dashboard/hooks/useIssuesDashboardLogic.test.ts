@@ -1,4 +1,6 @@
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
+
+import { rotateToNextFilter } from './useIssuesDashboardLogic';
 import { calculateSections } from './useIssuesDashboardLogic';
 import { IssuesStates } from './../types';
 
@@ -130,4 +132,14 @@ test('Filters to match closed issues.', async () => {
       IssuesStates['closed']
     )
   ).toStrictEqual(expectedResult);
+});
+
+test('Test for: filter rotation by 1', () => {
+  const filter = 0;
+  expect(rotateToNextFilter(filter)).toBe(1);
+});
+
+test('Test for: filter rotation by 2', () => {
+  const filter = 2;
+  expect(rotateToNextFilter(filter)).toBe(0);
 });
