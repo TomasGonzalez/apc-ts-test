@@ -1,25 +1,32 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import asyncStorage from '@react-native-async-storage/async-storage';
 
+import { Issue } from 'types';
 import { IssueItemType } from './types';
 
+export const setBookmarkedIssueToAsyncStorage = async (
+  issue: Issue,
+  _asyncStorage: typeof asyncStorage
+) =>
+  await _asyncStorage.setItem(
+    `bookmark:${issue.id}`,
+    issue.isBookmarked ? 'false' : 'true'
+  );
+
 const useIssueItemLogic = (props: IssueItemType) => {
-  const { item, onSelectItem, selectedItem, calculateSections } = props;
-  const [isSelected, setIsSelected] = useState(selectedItem === item.id);
+  const { item: issue, onSelectItem, selectedItem, calculateSections } = props;
+  const [isSelected, setIsSelected] = useState(selectedItem === issue.id);
 
   useEffect(() => {
-    setIsSelected(selectedItem === item.id);
+    setIsSelected(selectedItem === issue.id);
   }, [selectedItem]);
 
-  const onIssueSelect = () => onSelectItem(item);
+  const onIssueSelect = () => onSelectItem(issue);
 
-  const bookmarkIssue = async () => {
-    await AsyncStorage.setItem(
-      `bookmark:${item.id}`,
-      item.isBookmarked ? 'false' : 'true'
-    );
+  const bookmarkIssue = useCallback(async () => {
+    await setBookmarkedIssueToAsyncStorage(issue, asyncStorage);
     calculateSections();
-  };
+  }, [issue]);
 
   return {
     isSelected,
